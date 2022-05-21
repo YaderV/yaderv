@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-const templateRoot = "./ui/html"
+const templateRoot string = "../../ui/html"
 
 type application struct {
 	infoLog       *log.Logger
