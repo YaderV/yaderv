@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-const templateRoot string = "../../ui/html"
+const templateRoot string = "./ui/html"
 
 type application struct {
 	infoLog       *log.Logger
