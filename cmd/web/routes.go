@@ -9,5 +9,5 @@ import (
 func (app application) routes() http.Handler {
 	router := httprouter.New()
 	router.HandlerFunc(http.MethodGet, "/", app.home)
-	return router
+	return app.recoverPanic(app.logRequest(secureHeaders(router)))
 }
