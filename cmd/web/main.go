@@ -12,6 +12,7 @@ import (
 )
 
 const templateRoot string = "./ui/html"
+const staticPath string = "./ui/static"
 
 type application struct {
 	infoLog       *log.Logger
