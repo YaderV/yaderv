@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/YaderV/yaderv/internal/models"
+	"github.com/go-playground/form/v4"
 )
 
 const templateRoot string = "./ui/html"
@@ -21,6 +22,7 @@ type application struct {
 	errorLog      *log.Logger
 	templateCache map[string]*template.Template
 	users         models.UserModel
+	formDecoder   *form.Decoder
 }
 
 func main() {
@@ -46,6 +48,8 @@ func main() {
 	}
 	defer db.Close()
 
+	formDecoder := form.NewDecoder()
+
 	// Tie some varibles to the application struct so we share data/fuctions
 	// between the package istead of using global variables
 	app := application{
@@ -53,6 +57,7 @@ func main() {
 		errorLog:      errorLog,
 		templateCache: templateCache,
 		users:         models.UserModel{DB: db},
+		formDecoder:   formDecoder,
 	}
 
 	srv := &http.Server{

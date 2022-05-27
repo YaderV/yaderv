@@ -48,8 +48,8 @@ func MaxCharacters(value string, max int) bool {
 	return utf8.RuneCountInString(value) <= max
 }
 
-// Min returns true if the value field length is grater than min
-func Min(value string, min int) bool {
+// MinChars returns true if the value field length is grater than min
+func MinChars(value string, min int) bool {
 	return utf8.RuneCountInString(value) >= min
 
 }

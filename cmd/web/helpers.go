@@ -2,9 +2,12 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"net/http"
 	"runtime/debug"
+
+	"github.com/go-playground/form/v4"
 )
 
 func (app application) serverError(w http.ResponseWriter, err error) {
@@ -40,4 +43,26 @@ func (app application) render(w http.ResponseWriter, status int, name string) {
 	// Modify the header of the resposer
 	w.WriteHeader(status)
 	buf.WriteTo(w)
+}
+
+// decodePostForm wraps the logic of parsing a post request
+// and mapping the values to a destination
+func (app application) decodePostForm(r *http.Request, dst any) error {
+	err := r.ParseForm()
+	if err != nil {
+		return err
+	}
+	err = app.formDecoder.Decode(dst, r.PostForm)
+	if err != nil {
+		// the form Decoder requires a non-nil struct as destiniation
+		// if this error happens we want to manage as a programming (app level)
+		// error rather than a client (bad request) error, so we raise a panic
+		// that shoud be treated like a server error
+		var invalidDecoderError *form.InvalidDecoderError
+		if errors.As(err, invalidDecoderError) {
+			panic(err)
+		}
+
+	}
+	return nil
 }
