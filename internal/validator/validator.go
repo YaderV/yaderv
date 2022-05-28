@@ -20,7 +20,7 @@ func (v Validator) Valid() bool {
 }
 
 // AddFieldError ties a message to a given key (input)
-func (v Validator) AddFieldError(key, message string) {
+func (v *Validator) AddFieldError(key, message string) {
 	// We have to initialize the map if it does not exists
 	if v.FieldErrors == nil {
 		v.FieldErrors = make(map[string]string)
@@ -32,9 +32,10 @@ func (v Validator) AddFieldError(key, message string) {
 }
 
 // CheckField add an error message to the field if it is not valid
-func (v Validator) CheckField(ok bool, key, message string) {
+func (v *Validator) CheckField(ok bool, key, message string) {
 	if !ok {
-		v.FieldErrors[key] = message
+		// We have to use AddFieldError in the case the map is nil (non-initialize)
+		v.AddFieldError(key, message)
 	}
 }
 

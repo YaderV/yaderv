@@ -5,6 +5,15 @@ import (
 	"path/filepath"
 )
 
+type templateData struct {
+	Form any
+}
+
+func (app application) newTemplateData() *templateData {
+	// We can add here any data that have to be shared across the handlers
+	return &templateData{}
+}
+
 func newTemplateCache() (map[string]*template.Template, error) {
 
 	cache := map[string]*template.Template{}

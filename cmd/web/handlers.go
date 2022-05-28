@@ -14,7 +14,9 @@ type userSignForm struct {
 }
 
 func (app application) userSignup(w http.ResponseWriter, r *http.Request) {
-	app.render(w, http.StatusOK, "signup.tmpl")
+	data := app.newTemplateData()
+	data.Form = userSignForm{}
+	app.render(w, http.StatusOK, "signup.tmpl", data)
 }
 
 func (app application) userSignupPost(w http.ResponseWriter, r *http.Request) {
@@ -31,9 +33,16 @@ func (app application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 	form.CheckField(validator.NotBlank(form.Password), "password", "This field cannot be blank")
 	form.CheckField(validator.MinChars(form.Password, 8), "password", "This field must a least 8 characters long")
 
-	app.render(w, http.StatusOK, "home.tmpl")
+	if !form.Valid() {
+		data := app.newTemplateData()
+		data.Form = form
+		app.render(w, http.StatusOK, "signup.tmpl", data)
+		return
+	}
+
+	app.render(w, http.StatusOK, "home.tmpl", nil)
 }
 
 func (app application) home(w http.ResponseWriter, r *http.Request) {
-	app.render(w, http.StatusOK, "home.tmpl")
+	app.render(w, http.StatusOK, "home.tmpl", nil)
 }
