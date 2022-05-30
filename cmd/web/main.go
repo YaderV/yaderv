@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/YaderV/yaderv/internal/models"
+	"github.com/alexedwards/scs/postgresstore"
+	"github.com/alexedwards/scs/v2"
 	"github.com/go-playground/form/v4"
 )
 
@@ -18,11 +20,12 @@ const templateRoot string = "./ui/html"
 const staticPath string = "./ui/static"
 
 type application struct {
-	infoLog       *log.Logger
-	errorLog      *log.Logger
-	templateCache map[string]*template.Template
-	users         models.UserModel
-	formDecoder   *form.Decoder
+	infoLog        *log.Logger
+	errorLog       *log.Logger
+	templateCache  map[string]*template.Template
+	users          models.UserModel
+	formDecoder    *form.Decoder
+	sessionManager *scs.SessionManager
 }
 
 func main() {
@@ -50,14 +53,19 @@ func main() {
 
 	formDecoder := form.NewDecoder()
 
+	sessionManager := scs.New()
+	sessionManager.Store = postgresstore.New(db)
+	sessionManager.Lifetime = 12 * time.Hour
+
 	// Tie some varibles to the application struct so we share data/fuctions
 	// between the package istead of using global variables
 	app := application{
-		infoLog:       infoLog,
-		errorLog:      errorLog,
-		templateCache: templateCache,
-		users:         models.UserModel{DB: db},
-		formDecoder:   formDecoder,
+		infoLog:        infoLog,
+		errorLog:       errorLog,
+		templateCache:  templateCache,
+		users:          models.UserModel{DB: db},
+		formDecoder:    formDecoder,
+		sessionManager: sessionManager,
 	}
 
 	srv := &http.Server{

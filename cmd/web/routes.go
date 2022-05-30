@@ -12,11 +12,14 @@ func (app application) routes() http.Handler {
 	fileServer := http.FileServer(http.Dir(staticPath))
 	router.Handler(http.MethodGet, "/static/*filepath", http.StripPrefix("/static", fileServer))
 
-	// Users
-	router.HandlerFunc(http.MethodGet, "/user/signup/", app.userSignup)
-	router.HandlerFunc(http.MethodPost, "/user/signup/", app.userSignupPost)
+	// Set dynamic chain only for handlers that require sessions
+	dynamic := alice.New(app.sessionManager.LoadAndSave)
 
-	router.HandlerFunc(http.MethodGet, "/", app.home)
+	// Users
+	router.Handler(http.MethodGet, "/user/signup/", dynamic.ThenFunc(app.userSignup))
+	router.Handler(http.MethodPost, "/user/signup/", dynamic.ThenFunc(app.userSignupPost))
+
+	router.Handler(http.MethodGet, "/", dynamic.ThenFunc(app.home))
 
 	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 	return standard.Then(router)

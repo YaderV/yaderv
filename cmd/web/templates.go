@@ -2,16 +2,20 @@ package main
 
 import (
 	"html/template"
+	"net/http"
 	"path/filepath"
 )
 
 type templateData struct {
-	Form any
+	Flash string
+	Form  any
 }
 
-func (app application) newTemplateData() *templateData {
+func (app application) newTemplateData(r *http.Request) *templateData {
 	// We can add here any data that have to be shared across the handlers
-	return &templateData{}
+	return &templateData{
+		Flash: app.sessionManager.PopString(r.Context(), "flash"),
+	}
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {
