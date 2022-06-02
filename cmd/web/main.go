@@ -14,6 +14,7 @@ import (
 	"github.com/alexedwards/scs/postgresstore"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-playground/form/v4"
+	_ "github.com/lib/pq"
 )
 
 const templateRoot string = "./ui/html"
@@ -46,11 +47,13 @@ func main() {
 
 	db, err := openDB(*dns)
 
-	if db != nil {
+	if err != nil {
 		errorLog.Fatal(err)
 	}
 	defer db.Close()
 
+	// We set a form decoder as helper to parse form values into
+	// structs
 	formDecoder := form.NewDecoder()
 
 	sessionManager := scs.New()
@@ -98,5 +101,4 @@ func openDB(dns string) (*sql.DB, error) {
 	}
 
 	return db, nil
-
 }

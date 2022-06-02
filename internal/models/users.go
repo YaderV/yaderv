@@ -28,8 +28,8 @@ func (m UserModel) Insert(name, email, password string) error {
 		return err
 	}
 
-	stmt := "INSERT INTO USER (name, email, password_hash) VALUES (?, ?, ?)"
-	args := []interface{}{name, email, string(hashedPassword)}
+	stmt := "INSERT INTO users (name, email, password_hash, activated) VALUES ($1, $2, $3, $4)"
+	args := []interface{}{name, email, string(hashedPassword), false}
 
 	_, err = m.DB.Exec(stmt, args...)
 
