@@ -9,17 +9,23 @@ import (
 // EmailRX store the regular expression that we use to validate a email address
 var EmailRX = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
-// Validator contains the form field error messages
+// Validator handles field validators and erros messages
 type Validator struct {
-	FieldErrors map[string]string
+	NonFieldErrors []string
+	FieldErrors    map[string]string
 }
 
 // Valid checks is a Validator (attached to a form) if valid
 func (v Validator) Valid() bool {
-	return len(v.FieldErrors) == 0
+	return len(v.FieldErrors) == 0 && len(v.NonFieldErrors) == 0
 }
 
-// AddFieldError ties a message to a given key (input)
+// AddNonFieldError add an general error message that's no tied to a specific field
+func (v *Validator) AddNonFieldError(message string) {
+	v.NonFieldErrors = append(v.NonFieldErrors, message)
+}
+
+// AddFieldError adds an error message to a given input field
 func (v *Validator) AddFieldError(key, message string) {
 	// We have to initialize the map if it does not exists
 	if v.FieldErrors == nil {
@@ -58,4 +64,9 @@ func MinChars(value string, min int) bool {
 // Matches return true if a given value match the rx regular expresion
 func Matches(value string, rx *regexp.Regexp) bool {
 	return rx.MatchString(value)
+}
+
+// ConfirmPassword compares two password to check if they are the same
+func ConfirmPassword(password, repeatedPassword string) bool {
+	return password == repeatedPassword
 }

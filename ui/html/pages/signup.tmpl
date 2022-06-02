@@ -22,6 +22,12 @@
         <label class='error'>{{.}}</label>
       {{end}}
       <input type='password' name='password'>
+    <div>
+      <label>Repeat Password:</label>
+      {{with .Form.FieldErrors.repeat_password}}
+        <label class='error'>{{.}}</label>
+      {{end}}
+      <input type='password' name='repeated_password'>
     </div>
     <div>
       <input type='submit' value='Signup'>

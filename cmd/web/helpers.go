@@ -59,10 +59,14 @@ func (app application) decodePostForm(r *http.Request, dst any) error {
 		// error rather than a client (bad request) error, so we raise a panic
 		// that shoud be treated like a server error
 		var invalidDecoderError *form.InvalidDecoderError
-		if errors.As(err, invalidDecoderError) {
+		if errors.As(err, &invalidDecoderError) {
 			panic(err)
 		}
 
 	}
 	return nil
+}
+
+func (app application) isAuthenticated(r *http.Request) bool {
+	return app.sessionManager.Exists(r.Context(), SessionUserIDKey)
 }

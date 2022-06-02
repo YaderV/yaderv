@@ -7,14 +7,16 @@ import (
 )
 
 type templateData struct {
-	Flash string
-	Form  any
+	Flash           string
+	Form            any
+	IsAuthenticated bool
 }
 
 func (app application) newTemplateData(r *http.Request) *templateData {
 	// We can add here any data that have to be shared across the handlers
 	return &templateData{
-		Flash: app.sessionManager.PopString(r.Context(), "flash"),
+		Flash:           app.sessionManager.PopString(r.Context(), "flash"),
+		IsAuthenticated: app.isAuthenticated(r),
 	}
 }
 

@@ -8,6 +8,23 @@
     <body>
       <header>
         <h1><a href='/'>Snippetbox</a></h1>
+        <nav>
+            <div>
+                <a href='/'>Home</a>
+                <!-- Toggle the link based on authentication status -->
+                {{if .IsAuthenticated}}
+                    <a href='/snippet/create'>Create snippet</a>
+                {{end}}
+            </div>
+            <div>
+                <!-- Toggle the links based on authentication status -->
+                {{if .IsAuthenticated}}
+                    <form action='/user/logout' method='POST'>
+                        <button>Logout</button>
+                    </form>
+                {{end}}
+            </div>
+        </nav>
       </header>
       <main>
         {{with .Flash}}

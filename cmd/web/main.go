@@ -20,6 +20,10 @@ import (
 const templateRoot string = "./ui/html"
 const staticPath string = "./ui/static"
 
+// SessionUserIDKey represents the session where we are going to store
+// the user id
+const SessionUserIDKey string = "authenticatedUserID"
+
 type application struct {
 	infoLog        *log.Logger
 	errorLog       *log.Logger

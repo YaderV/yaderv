@@ -16,10 +16,16 @@ func (app application) routes() http.Handler {
 	dynamic := alice.New(app.sessionManager.LoadAndSave)
 
 	// Users
+	router.Handler(http.MethodGet, "/user/login/", dynamic.ThenFunc(app.userLogin))
+	router.Handler(http.MethodPost, "/user/login/", dynamic.ThenFunc(app.userLoginPost))
 	router.Handler(http.MethodGet, "/user/signup/", dynamic.ThenFunc(app.userSignup))
 	router.Handler(http.MethodPost, "/user/signup/", dynamic.ThenFunc(app.userSignupPost))
+	router.Handler(http.MethodPost, "/user/logout/", dynamic.ThenFunc(app.userLogoutPost))
 
 	router.Handler(http.MethodGet, "/", dynamic.ThenFunc(app.home))
+
+	// private urls
+	// protected := dynamic.Append(app.requireAuthentication)
 
 	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 	return standard.Then(router)
