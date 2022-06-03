@@ -1,0 +1,30 @@
+{{define "title"}}Login{{end}}
+
+{{define "main"}}
+<form action='/article/create' method='POST' novalidate>
+    <div>
+        <label>Title:</label>
+        {{with .Form.FieldErrors.title}}
+            <label class='error'>{{.}}</label>
+        {{end}}
+        <input type='title' name='title' value='{{.Form.Title}}'>
+    </div>
+    <div>
+        <label>Body:</label>
+        {{with .Form.FieldErrors.body}}
+            <label class='error'>{{.}}</label>
+        {{end}}
+        <textarea></textarea>
+    </div>
+    <div>
+        <label>Categories:</label>
+        {{with .Form.FieldErrors.categories}}
+            <label class='error'>{{.}}</label>
+        {{end}}
+        <input type='categories' name='categories[]' value='{{.Form.Categories}}'>
+    </div>
+    <div>
+        <input type='submit' value='Save'>
+    </div>
+</form>
+{{end}}

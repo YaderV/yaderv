@@ -45,6 +45,11 @@ func (v *Validator) CheckField(ok bool, key, message string) {
 	}
 }
 
+// NotEmpty validate that a given string array is not empty
+func NotEmpty(values []string) bool {
+	return len(values) > 0
+}
+
 // NotBlank checks if a field value is not blank
 func NotBlank(value string) bool {
 	return strings.TrimSpace(value) != ""
