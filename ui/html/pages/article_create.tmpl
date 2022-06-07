@@ -14,14 +14,14 @@
         {{with .Form.FieldErrors.body}}
             <label class='error'>{{.}}</label>
         {{end}}
-        <textarea></textarea>
+        <textarea name="body">{{.Form.Body}}</textarea>
     </div>
     <div>
         <label>Categories:</label>
         {{with .Form.FieldErrors.categories}}
             <label class='error'>{{.}}</label>
         {{end}}
-        <input type='categories' name='categories[]' value='{{.Form.Categories}}'>
+        <input type='categories' name='categories[]' value='{{fromArrayToString .Form.Categories}}'>
     </div>
     <div>
         <input type='submit' value='Save'>

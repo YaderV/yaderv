@@ -29,6 +29,7 @@ type application struct {
 	errorLog       *log.Logger
 	templateCache  map[string]*template.Template
 	users          models.UserModel
+	articles       models.ArticleModel
 	formDecoder    *form.Decoder
 	sessionManager *scs.SessionManager
 }
@@ -71,6 +72,7 @@ func main() {
 		errorLog:       errorLog,
 		templateCache:  templateCache,
 		users:          models.UserModel{DB: db},
+		articles:       models.ArticleModel{DB: db},
 		formDecoder:    formDecoder,
 		sessionManager: sessionManager,
 	}

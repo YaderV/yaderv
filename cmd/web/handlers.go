@@ -159,9 +159,22 @@ func (app application) articleCreatePost(w http.ResponseWriter, r *http.Request)
 
 	form.CheckField(validator.NotBlank(form.Title), "title", "This field cannot be blank")
 	form.CheckField(validator.NotBlank(form.Body), "body", "This field cannot be blank")
-	//form.CheckField(validator.NotEmpty(form.Categories), "categories", "This field cannot be blank")
+	form.CheckField(validator.NotEmpty(form.Categories), "categories", "This field cannot be blank")
 
-	data := app.newTemplateData(r)
-	data.Form = &articleCreateForm{}
-	app.render(w, http.StatusOK, "article_create.tmpl", data)
+	if !form.Valid() {
+		data := app.newTemplateData(r)
+		data.Form = form
+		app.render(w, http.StatusOK, "article_create.tmpl", data)
+		return
+	}
+
+	err = app.articles.Create(form.Title, form.Body, form.Categories)
+
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	app.sessionManager.Put(r.Context(), "flash", "Article Created")
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

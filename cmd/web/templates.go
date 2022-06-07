@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"net/http"
 	"path/filepath"
+	"strings"
 )
 
 type templateData struct {
@@ -20,6 +21,14 @@ func (app application) newTemplateData(r *http.Request) *templateData {
 	}
 }
 
+func fromArrayToString(list []string) string {
+	return strings.Join(list, ", ")
+}
+
+var functions = template.FuncMap{
+	"fromArrayToString": fromArrayToString,
+}
+
 func newTemplateCache() (map[string]*template.Template, error) {
 
 	cache := map[string]*template.Template{}
@@ -34,8 +43,11 @@ func newTemplateCache() (map[string]*template.Template, error) {
 		// Extract the name from the file
 		name := filepath.Base(page)
 
+		// Create a new template and assign a new custom func
 		// Parse the base template into a template set
-		ts, err := template.ParseFiles(filepath.Join(templateRoot, "base.tmpl"))
+		ts, err := template.New(name).
+			Funcs(functions).
+			ParseFiles(filepath.Join(templateRoot, "base.tmpl"))
 
 		if err != nil {
 			return nil, err
