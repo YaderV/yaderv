@@ -1,7 +1,7 @@
 {{define "title"}}Login{{end}}
 
 {{define "main"}}
-<form action='/article/create' method='POST' novalidate>
+<form action='/manage/article/create' method='POST' novalidate>
     <div>
         <label>Title:</label>
         {{with .Form.FieldErrors.title}}

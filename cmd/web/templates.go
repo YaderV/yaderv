@@ -5,12 +5,15 @@ import (
 	"net/http"
 	"path/filepath"
 	"strings"
+
+	"github.com/YaderV/yaderv/internal/models"
 )
 
 type templateData struct {
 	Flash           string
 	Form            any
 	IsAuthenticated bool
+	Articles        []models.Article
 }
 
 func (app application) newTemplateData(r *http.Request) *templateData {

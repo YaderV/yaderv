@@ -1,0 +1,25 @@
+{{define "title"}}Login{{end}}
+
+{{define "main"}}
+    <a href="article/create">Create Article</a>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Categories</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Articles}}
+                <tr>
+                    <td><a href="">{{.ID}}</a></td>
+                    <td><a href="">{{.Title}}</a></td>
+                    <td>{{fromArrayToString .Categories}}</td>
+                    <td>{{.CreatedAt}}</td>
+                </tr>
+            {{end}}
+        </tbody>
+    </table>
+{{end}}

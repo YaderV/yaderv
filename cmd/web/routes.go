@@ -26,8 +26,9 @@ func (app application) routes() http.Handler {
 
 	// private urls
 	protected := dynamic.Append(app.requireAuthentication)
-	router.Handler(http.MethodGet, "/article/create/", protected.ThenFunc(app.articleCreate))
-	router.Handler(http.MethodPost, "/article/create/", protected.ThenFunc(app.articleCreatePost))
+	router.Handler(http.MethodGet, "/manage/article", protected.ThenFunc(app.articleList))
+	router.Handler(http.MethodGet, "/manage/article/create/", protected.ThenFunc(app.articleCreate))
+	router.Handler(http.MethodPost, "/manage/article/create/", protected.ThenFunc(app.articleCreatePost))
 
 	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 	return standard.Then(router)

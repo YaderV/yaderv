@@ -135,6 +135,17 @@ func (app application) home(w http.ResponseWriter, r *http.Request) {
 	app.render(w, http.StatusOK, "home.tmpl", data)
 }
 
+func (app application) articleList(w http.ResponseWriter, r *http.Request) {
+	articles, err := app.articles.List()
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	data := app.newTemplateData(r)
+	data.Articles = articles
+	app.render(w, http.StatusOK, "article_list.tmpl", data)
+}
+
 type articleCreateForm struct {
 	Title               string   `form:"title"`
 	Body                string   `form:"body"`
@@ -176,5 +187,5 @@ func (app application) articleCreatePost(w http.ResponseWriter, r *http.Request)
 	}
 
 	app.sessionManager.Put(r.Context(), "flash", "Article Created")
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, "/manage/article", http.StatusSeeOther)
 }
