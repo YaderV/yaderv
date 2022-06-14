@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/lib/pq"
@@ -59,4 +60,20 @@ func (m ArticleModel) List() ([]Article, error) {
 	}
 
 	return articles, nil
+}
+
+// Get returns a Article given an id
+func (m ArticleModel) Get(id int) (*Article, error) {
+	stmt := "SELECT id, title, body, categories FROM articles WHERE id = $1"
+	article := &Article{}
+	err := m.DB.QueryRow(stmt, id).Scan(
+		&article.ID, &article.Title, &article.Body, pq.Array(&article.Categories),
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrNoRecord
+		}
+		return nil, err
+	}
+	return article, nil
 }

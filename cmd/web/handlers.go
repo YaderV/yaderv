@@ -3,9 +3,11 @@ package main
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/YaderV/yaderv/internal/models"
 	"github.com/YaderV/yaderv/internal/validator"
+	"github.com/julienschmidt/httprouter"
 )
 
 type userSignForm struct {
@@ -135,7 +137,7 @@ func (app application) home(w http.ResponseWriter, r *http.Request) {
 	app.render(w, http.StatusOK, "home.tmpl", data)
 }
 
-func (app application) articleList(w http.ResponseWriter, r *http.Request) {
+func (app application) articleManageList(w http.ResponseWriter, r *http.Request) {
 	articles, err := app.articles.List()
 	if err != nil {
 		app.serverError(w, err)
@@ -188,4 +190,29 @@ func (app application) articleCreatePost(w http.ResponseWriter, r *http.Request)
 
 	app.sessionManager.Put(r.Context(), "flash", "Article Created")
 	http.Redirect(w, r, "/manage/article", http.StatusSeeOther)
+}
+
+func (app application) articleEdit(w http.ResponseWriter, r *http.Request) {
+	params := httprouter.ParamsFromContext(r.Context())
+	id, err := strconv.Atoi(params.ByName("id"))
+	if err != nil || id < 1 {
+		app.notFound(w)
+		return
+	}
+	article, err := app.articles.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+			return
+		}
+		app.serverError(w, err)
+		return
+	}
+	data := app.newTemplateData(r)
+	data.Form = &articleCreateForm{
+		Title:      article.Title,
+		Body:       article.Body,
+		Categories: article.Categories,
+	}
+	app.render(w, http.StatusOK, "article_create.tmpl", data)
 }
